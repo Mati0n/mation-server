@@ -7,7 +7,7 @@ import databaseModule from './database';
 import apiModule from './api';
 import { setup } from './websocket';
 import authModule from './auth';
-import { setup as _setup } from './core';
+import { setup as core } from './core';
 
 // Подключение базы данных
 databaseModule.connect();
@@ -22,7 +22,7 @@ setup(app);
 authModule.setup(app);
 
 // Подключение ядра сервера
-_setup();
+core();
 
 // Запуск сервера
 app.listen(port, () => {
