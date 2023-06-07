@@ -13,6 +13,7 @@ function setup (app) {
     const clientId = request.headers['x-client-id'];
 
     // Обработка подключения клиента
+    
     const clientInfo = authModule.getClientInfo(clientId);
     if (clientInfo) {
       // Аутентификация клиента
