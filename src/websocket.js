@@ -1,4 +1,5 @@
 import { server } from 'websocket';
+import authModule from './auth';
 
 function setup (app) {
   const wsServer = new server({
@@ -7,6 +8,23 @@ function setup (app) {
 
   wsServer.on('request', (request) => {
     const connection = request.accept(null, request.origin);
+
+    // Получение идентификатора клиента (hwid iOS устройства)
+    const clientId = request.headers['x-client-id'];
+
+    // Обработка подключения клиента
+    const clientInfo = authModule.getClientInfo(clientId);
+    if (clientInfo) {
+      // Аутентификация клиента
+      // ...
+    } else {
+      // Неаутентифицированный клиент
+      connection.close();
+      return;
+    }
+
+    // Сохранение информации о клиенте
+    authModule.storeClientInfo(clientId, session, zone);
 
     // Обработчики событий WebSocket
     connection.on('message', (message) => {
@@ -17,6 +35,8 @@ function setup (app) {
     connection.on('close', () => {
       // Обработка закрытия соединения
       console.log('WebSocket connection closed');
+      // Удаление информации о клиенте
+      authModule.removeClientInfo(clientId);
     });
   });
 }
