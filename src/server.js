@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 53305;
+const port = 53301;
 const databaseModule = require('./database');
 const apiModule = require('./api');
 const { setup: websocketSetup } = require('./websocket');
