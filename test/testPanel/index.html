@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Panel</title>
+  </head>
+  <body>
+    <h1>Test Panel</h1>
+    <div id="status">Connection Status: Disconnecting</div>
+    <button id="connectBtn">Connect</button>
+    <button id="getConfigBtn">Receive config</button>
+    <button id="testApiBtn">Check API</button>
+    <div id="log"></div>
+
+    <script>
+      // Проверка поддержки WebSocket в браузере
+      if (!window.WebSocket) {
+        document.getElementById("status").textContent =
+          "WebSocket is not supported in this browser.";
+      } else {
+        // Генерация произвольного UUID
+        function generateUUID() {
+          return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+            /[xy]/g,
+            function (c) {
+              var r = (Math.random() * 16) | 0,
+                v = c === "x" ? r : (r & 0x3) | 0x8;
+              return v.toString(16);
+            }
+          );
+        }
+
+        // WebSocket клиент
+        const socket = new WebSocket("ws://localhost:53301/auth/register");
+
+        // Обработчики событий WebSocket
+        socket.addEventListener("open", () => {
+          document.getElementById("status").textContent =
+            "Connection Status: Connected";
+          // Аутентификация с произвольным UUID
+          const uuid = generateUUID();
+          socket.send(JSON.stringify({ type: "auth", uuid: uuid }));
+        });
+
+        socket.addEventListener("message", (event) => {
+          const message = JSON.parse(event.data);
+          // Обработка полученных данных
+          // ...
+        });
+
+        socket.addEventListener("close", () => {
+          document.getElementById("status").textContent =
+            "Connection Status: Disonnected";
+        });
+
+        // Обработчики событий кнопок
+        document.getElementById("connectBtn").addEventListener("click", () => {
+          // Ничего не делаем, соединение будет установлено автоматически после загрузки страницы
+        });
+
+        document
+          .getElementById("getConfigBtn")
+          .addEventListener("click", () => {
+            socket.send(JSON.stringify({ type: "getConfig" }));
+          });
+
+        document.getElementById("testApiBtn").addEventListener("click", () => {
+          // Проверка других API запросов
+          // ...
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "mocha",
+    "test": "mocha -r esm --exit './test/**/*.test.js'",
     "lint": "eslint src",
     "format": "prettier --write \"src/**/*.js\""
   },
@@ -22,22 +22,27 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "formidable": "^2.1.1",
     "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.1.4",
+    "mongoose": "^6.11.2",
     "morgan": "^1.10.0",
     "path": "^0.12.7",
-    "websocket": "^1.0.34",
-    "winston": "^3.3.3"
+    "socket.io": "^4.6.2",
+    "superagent": "^8.0.9",
+    "winston": "^3.9.0"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "eslint": "^8.0.0",
-    "mocha": "^9.1.2",
+    "mocha": "^9.2.2",
     "nodemon": "^2.0.15",
     "prettier": "^2.4.1",
+    "sinon": "^15.1.0",
     "supertest": "^6.2.0"
   }
 }
