@@ -1,15 +1,21 @@
-const { Router } = require('express');
-const router = Router();
-
-// Определение маршрутов API
-router.get('/api/users', (req, res) => {
-  // Обработка запроса
-  res.send('API endpoint: /users');
-});
+const express = require('express');
+const router = express.Router();
+const { authenticate } = require('./auth');
 
 function setup (app) {
-  // Подключение API маршрутов к Express.js приложению
-  app.use(router);
+  app.use('/api', router);
+
+  router.use(authenticate);
+
+  router.get('/status', (req, res) => {
+    // Handle status request
+    res.json({ message: 'OK' });
+  });
+
+  router.post('/command', (req, res) => {
+    // Handle command request
+    res.json({ message: 'Command received' });
+  });
 }
 
 module.exports = { setup };

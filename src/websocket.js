@@ -1,5 +1,5 @@
 const { server } = require('websocket');
-const { authModule } = require('./auth');
+const { authenticate } = require('./auth');
 
 function setup (app) {
   const wsServer = new server({
@@ -8,36 +8,25 @@ function setup (app) {
 
   wsServer.on('request', (request) => {
     const connection = request.accept(null, request.origin);
-
-    // Получение идентификатора клиента (hwid iOS устройства)
-    const clientId = request.headers['x-client-id'];
-
-    // Обработка подключения клиента
-
-    const clientInfo = authModule.getClientInfo(clientId);
+    const uuid = request.headers['x-client-id'];
+    const clientInfo = authenticate(uuid);
     if (clientInfo) {
-      // Аутентификация клиента
+      // Authenticated client
       // ...
     } else {
-      // Неаутентифицированный клиент
+      // Unauthenticated client
       connection.close();
       return;
     }
 
-    // Сохранение информации о клиенте
-    authModule.storeClientInfo(clientId, session, zone);
-
-    // Обработчики событий WebSocket
     connection.on('message', (message) => {
-      // Обработка сообщения от WebSocket-клиента
+      // Handle message from WebSocket client
       console.log('Received message:', message);
     });
 
     connection.on('close', () => {
-      // Обработка закрытия соединения
+      // Handle connection close
       console.log('WebSocket connection closed');
-      // Удаление информации о клиенте
-      authModule.removeClientInfo(clientId);
     });
   });
 }
