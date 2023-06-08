@@ -15,6 +15,8 @@ function setup (app) {
     clients[uuid] = {
       uuid,
       createdAt: new Date().toISOString(),
+      session: null,
+      state: {},
     };
     res.status(200).json({ message: 'Registration successful' });
   });
@@ -44,4 +46,4 @@ function authenticate (req, res, next) {
   });
 }
 
-module.exports = { setup, authenticate };
+module.exports = { setup, authenticate, clients };
