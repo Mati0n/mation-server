@@ -1,5 +1,5 @@
-import { server } from 'websocket';
-import authModule from './auth';
+const { server } = require('websocket');
+const { authModule } = require('./auth');
 
 function setup (app) {
   const wsServer = new server({
@@ -13,7 +13,7 @@ function setup (app) {
     const clientId = request.headers['x-client-id'];
 
     // Обработка подключения клиента
-    
+
     const clientInfo = authModule.getClientInfo(clientId);
     if (clientInfo) {
       // Аутентификация клиента
@@ -42,4 +42,4 @@ function setup (app) {
   });
 }
 
-export default { setup };
+module.exports = { setup };

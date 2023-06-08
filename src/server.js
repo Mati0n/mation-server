@@ -1,16 +1,16 @@
-import express from 'express';
+const express = require('express');
 const app = express();
-const port = 53304;
+const port = 53305;
 
 // Подключение модулей
-import databaseModule from './database';
-import apiModule from './api';
-import { setup } from './websocket';
-import authModule from './auth';
-import { setup as core } from './core';
+const databaseModule = require('./database');
+const apiModule = require('./api');
+const { setup } = require('./websocket');
+const authModule = require('./auth');
+const { setup: coreSetup } = require('./core');
 
 // Подключение базы данных
-databaseModule.connect();
+//databaseModule.connect();
 
 // Подключение API
 apiModule.setup(app);
@@ -22,7 +22,7 @@ setup(app);
 authModule.setup(app);
 
 // Подключение ядра сервера
-core();
+coreSetup();
 
 // Запуск сервера
 app.listen(port, () => {

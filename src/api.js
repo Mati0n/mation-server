@@ -1,4 +1,4 @@
-import { Router } from 'express';
+const { Router } = require('express');
 const router = Router();
 
 // Определение маршрутов API
@@ -12,4 +12,4 @@ function setup (app) {
   app.use(router);
 }
 
-export default { setup };
+module.exports = { setup };

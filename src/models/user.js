@@ -1,18 +1,16 @@
-import { Schema, model } from 'mongoose';
+class User {
+  constructor({ username, password, email, name, role }) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.name = name;
+    this.role = role;
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+    this.lastControlZone = null;
+    this.lastControlDevice = null;
+    // Другие поля пользователя...
+  }
+}
 
-const userSchema = new Schema({
-  username: { type: String, required: true },
-  password: { type: String, required: true },
-  email: { type: String, required: true },
-  name: { type: String, required: true },
-  role: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  lastControlZone: { type: String, default: null },
-  lastControlDevice: { type: String, default: null },
-  // другие поля пользователя...
-});
-
-const User = model('User', userSchema);
-
-export default User;
+module.exports = User;

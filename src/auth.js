@@ -1,7 +1,7 @@
-import { Router } from 'express';
+const { Router } = require('express');
 const router = Router();
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('./models/user');
 
 // Метод регистрации новых пользователей
 router.post('/auth/register', async (req, res) => {
@@ -73,6 +73,11 @@ router.get('/api/users', authenticateToken, (req, res) => {
 
 const connectedClients = new Map();
 
+// Инициализация модуля
+function setup () {
+  // Реализация инициализации модуля
+}
+
 function storeClientInfo (clientId, session, zone) {
   connectedClients.set(clientId, { session, zone });
 }
@@ -85,4 +90,28 @@ function getClientInfo (clientId) {
   return connectedClients.get(clientId);
 }
 
-module.exports = { setup, storeClientInfo, removeClientInfo, getClientInfo };
+// Функция для аутентификации токена
+function authenticateToken (req, res, next) {
+  // Получение токена из заголовка запроса или другого места
+  const token = req.headers.authorization;
+
+  // Проверка наличия токена
+  if (!token) {
+    return res.status(401).json({ message: 'Отсутствует токен авторизации' });
+  }
+
+  try {
+    // Проверка валидности токена и расшифровка его содержимого
+    const decodedToken = jwt.verify(token, 'secret-key');
+
+    // Добавление расшифрованного токена в объект запроса для дальнейшего использования
+    req.user = decodedToken;
+
+    // Продолжение выполнения следующей функции-обработчика
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Неверный токен авторизации' });
+  }
+}
+
+module.exports = { setup, storeClientInfo, removeClientInfo, getClientInfo, authenticateToken };
