@@ -2,7 +2,6 @@ const express = require('express');
 const morgan = require('morgan');
 const logger = require('./logger/logger');
 const app = express();
-const port = 53301;
 const mongoose = require('mongoose');
 //const databaseModule = require('./database/database');
 const { setup: authModuleSetup } = require('./core/auth');
@@ -45,12 +44,13 @@ app.use('/api/v1/drivers', driversRouter);
 // Загрузить все драйверы в папке "drivers" при старте сервера
 drivers.loadAll();
 
-const server = websocketSetup(app);
+websocketSetup(app);
+
 coreModuleSetup();
 
-server.listen(port, () => {
-  console.log(`MATION Server is running on port ${port}`);
-});
+// server.listen(port, () => {
+//   console.log(`MATION Server is running on port ${port}`);
+// });
 
 function errorHandler (err, req, res, next) {
   console.error(err.message);

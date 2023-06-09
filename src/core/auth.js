@@ -4,29 +4,26 @@ const express = require('express');
 const router = express.Router();
 const logger = require('../logger/logger');
 const { events } = require('./core');
-const PanelController = require(path.join(__dirname, '..', 'models/PanelController'));
-
-let clients = {};
+const Panel = require(path.join(__dirname, '..', 'models/Panel'));
 
 function setup (app) {
   app.use('/auth', router);
-
-  router.post('/register', (req, res) => {
+  router.post('/register', async (req, res) => {
     const { uuid } = req.query;
     logger.info(`uuid: ${uuid}`);
-    if (clients[uuid]) {
+    const existingPanel = await Panel.findOne({ uuid });
+    if (existingPanel) {
       return res.status(400).json({ message: 'Panel already exists' });
     }
-
     events.emit('registerPanelController', uuid);
-    clients[uuid] = new PanelController(uuid);
+    const newPanel = new Panel({ uuid });
+    await newPanel.save();
     res.status(200).json({ message: 'Registration successful' });
   });
-
-  router.post('/login', (req, res) => {
+  router.post('/login', async (req, res) => {
     const { uuid } = req.query;
-    const client = clients[uuid];
-    if (!client) {
+    const panel = await Panel.findOne({ uuid });
+    if (!panel) {
       return res.status(400).json({ message: 'Invalid UUID' });
     }
     const token = jwt.sign({ uuid }, 'your-secret-key');
@@ -42,18 +39,5 @@ function authenticate (req, res, next) {
   req.uuid = uuid;
   next();
 }
-// function authenticate (req, res, next) {
-//   const token = req.headers['authorization'];
-//   if (!token) {
-//     return res.status(401).json({ message: 'No token provided' });
-//   }
-//   jwt.verify(token, 'your-secret-key', (err, decoded) => {
-//     if (err) {
-//       return res.status(401).json({ message: 'Failed to authenticate token' });
-//     }
-//     req.uuid = decoded.uuid;
-//     next();
-//   });
-// }
 
-module.exports = { setup, authenticate, clients };
+module.exports = { setup, authenticate };
