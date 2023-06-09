@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const SourceModel = require('../../models/Source');
+const path = require('path');
+const SourceModel = require(path.join(__dirname, '../..', 'models/Source'));
 
 // Получение списка всех источников
 router.get('/', async (req, res) => {

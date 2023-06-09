@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const DriverModel = require('../../models/Driver');
+const path = require('path');
+const DriverModel = require(path.join(__dirname, '../..', 'models/Driver'));
 
 // Получение списка доступных драйверов
 router.get('/', async (req, res) => {

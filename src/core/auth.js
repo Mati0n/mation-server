@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 const logger = require('../logger/logger');
 const { events } = require('./core');
-const PanelController = require('../models/PanelController');
+const PanelController = require(path.join(__dirname, '..', 'models/PanelController'));
 
 let clients = {};
 

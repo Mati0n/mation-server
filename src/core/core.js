@@ -1,6 +1,7 @@
+const path = require('path');
 const { EventEmitter } = require('events');
 const events = new EventEmitter();
-const PanelController = require('../models/PanelController');
+const PanelController = require(path.join(__dirname, '..', 'models/PanelController'));
 
 const panelControllers = {};
 

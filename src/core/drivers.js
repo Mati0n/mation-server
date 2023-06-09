@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const DriverModel = require('../models/Driver');
-const driversPath = path.join(__dirname, '..', 'drivers/');;
+const DriverModel = require(path.join(__dirname, '..', 'models/Driver'));
+const driversPath = path.join(__dirname, '..', 'drivers/');
 
 function loadAll () {
   const driverFolders = fs.readdirSync(driversPath, { withFileTypes: true })

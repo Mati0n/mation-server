@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const zoneModel = require('../../models/Zone');
+const path = require('path');
+const zoneModel = require(path.join(__dirname, '../..', 'models/Zone'));
 
 // Получение списка всех зон
 router.get('/', async (req, res) => {
