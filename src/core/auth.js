@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const logger = require('../logger/logger');
 const { events } = require('./core');
-const PanelController = require('../models/panelController');
+const PanelController = require('../models/PanelController');
 
 let clients = {};
 

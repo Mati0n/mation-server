@@ -6,9 +6,10 @@ const port = 53301;
 const mongoose = require('mongoose');
 //const databaseModule = require('./database/database');
 const { setup: authModuleSetup } = require('./core/auth');
-const { setup: apiModuleSetup } = require('./api');
+const { setup: apiModuleSetup } = require('./core/api');
 const { setup: websocketSetup } = require('./core/socketio');
 const { setup: coreModuleSetup } = require('./core/core');
+const drivers = require('./core/drivers');
 
 // Подключение к MongoDB с использованием mongoose
 mongoose.set('strictQuery', true);
@@ -31,6 +32,7 @@ const sourcesRouter = require('./api/v1/sources');
 const scenesRouter = require('./api/v1/scenes');
 const configRouter = require('./api/v1/config');
 const statusRouter = require('./api/v1/status');
+const driversRouter = require('./api/v1/drivers');
 
 // API routes
 app.use('/api/v1/sources', sourcesRouter);
@@ -38,6 +40,10 @@ app.use('/api/v1/scenes', scenesRouter);
 app.use('/api/v1/config', configRouter);
 app.use('/api/v1/status', statusRouter);
 app.use('/api/v1/zones', zonesRouter);
+app.use('/api/v1/drivers', driversRouter);
+
+// Загрузить все драйверы в папке "drivers" при старте сервера
+drivers.loadAll();
 
 const server = websocketSetup(app);
 coreModuleSetup();

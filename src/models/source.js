@@ -1,27 +1,14 @@
-class Source {
-  constructor(sid, did, name, options = {}) {
-    this.name = name || 'Source';
-    this.id = sid.toString();
-    this.image = {};
-    this.description = "";
-    this.driverId = did;
-    this.hide = options.hide || false;
-    this.runAction = options.runAction || [];
-    this.active = false;
-    this.nowUsedInZones = options.global ? [] : undefined;
-  }
-}
+const mongoose = require('mongoose');
 
-class SourceGroup {
-  constructor(sid, name, options = {}) {
-    this.name = name || "Source Group";
-    this.id = sid.toString();
-    this.image = {};
-    this.description = "";
-    this.runAction = [];
-    this.active = false;
-    this.group = options.group || null;
-  }
-}
+const SourceSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String, default: '' },
+  driver: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver', required: true },
+  image: { type: String, default: '' },
+  isActive: { type: Boolean, default: false },
+  isEnabled: { type: Boolean, default: true },
+  isVisible: { type: Boolean, default: true },
+  zones: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Zone' }], default: [] },
+});
 
-module.exports = { Source, SourceGroup };
+module.exports = mongoose.model('Source', SourceSchema);
