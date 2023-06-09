@@ -13,7 +13,15 @@ const PanelSchema = new mongoose.Schema({
   lastSeen: Date,
   state: {
     type: String,
-    default: 'inactive'
+    default: 'inactive' // inactive, main, zone
+  },
+  sources: {
+    type: Array,
+    default: []
+  },
+  zone: {
+    type: String,
+    default: ''
   },
   socketId: String
 });
