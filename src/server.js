@@ -110,11 +110,13 @@ loader.add({
     const zonesRouter = require('./api/v1/zones');
     const sourcesRouter = require('./api/v1/sources');
     const scenesRouter = require('./api/v1/scenes');
-    const configRouter = require('./api/v1/config');
+    const configRouter = require('./api/v1/auth');
     const statusRouter = require('./api/v1/status');
     const driversRouter = require('./api/v1/drivers');
+    const authRouter = require('./api/v1/auth');
 
     // API routes
+    app.use('/auth', authRouter);
     app.use('/api/v1/sources', sourcesRouter);
     app.use('/api/v1/scenes', scenesRouter);
     app.use('/api/v1/config', configRouter);
