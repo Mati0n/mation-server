@@ -15,7 +15,6 @@ function setup (app) {
     if (existingPanel) {
       return res.status(400).json({ message: 'Panel already exists' });
     }
-    events.emit('registerPanelController', uuid);
     const newPanel = new Panel({ uuid });
     await newPanel.save();
     res.status(200).json({ message: 'Registration successful' });

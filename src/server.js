@@ -8,13 +8,52 @@ const { setup: authModuleSetup } = require('./core/auth');
 const { setup: websocketSetup } = require('./core/socketio');
 const { setup: coreModuleSetup } = require('./core/core');
 const drivers = require('./core/drivers');
-const Panel = require(path.join(__dirname, '.', 'models/Panel'));
-const Zone = require(path.join(__dirname, '.', 'models/Zone'));
-const Source = require(path.join(__dirname, '.', 'models/Source'));
+const PanelModel = require(path.join(__dirname, '.', 'models/Panel'));
+const ZoneModel = require(path.join(__dirname, '.', 'models/Zone'));
+const SourceModel = require(path.join(__dirname, '.', 'models/Source'));
+const DriverModel = require(path.join(__dirname, '.', 'models/Driver'));
+
 const Loader = require('./core/loader');
 
 const loader = new Loader();
 
+async function initializeData () {
+  // Создаем драйвер
+  const driver = new DriverModel({
+    name: "Placeholder driver",
+    version: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      stage: "beta"
+    },
+    isCompatible: true
+  });
+  await driver.save();
+
+  // Создаем зоны
+  for (let i = 1; i <= 5; i++) {
+    let zone = await ZoneModel.findOne({ name: `Zone ${i}` });
+    if (!zone) {
+      zone = new ZoneModel({ name: `Zone ${i}`, isActive: false });
+      await zone.save();
+    }
+
+    // Создаем источники для каждой зоны
+    for (let j = 1; j <= 3; j++) {
+      let source = await SourceModel.findOne({ name: `Source ${j} for Zone ${i}` });
+      if (!source) {
+        source = new SourceModel({
+          name: `Source ${j} for Zone ${i}`,
+          isActive: false,
+          zone: zone._id,
+          driver: driver._id
+        });
+        await source.save();
+      }
+    }
+  }
+}
 // Подключение к MongoDB с использованием mongoose
 loader.add({
   name: 'Connect to MongoDB...',
@@ -24,20 +63,29 @@ loader.add({
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
-      .then(() => console.log('Connected to MongoDB'))
+      .then(() => {
+        console.log('Connected to MongoDB');
+
+        // Инициализация всех панелей и состояние зон и источников в базе данных
+        PanelModel.updateMany({}, { state: 'inactive', socketId: null });
+        ZoneModel.updateMany({}, { active: false });
+        SourceModel.updateMany({}, { active: false });
+
+        initializeData();
+      })
       .catch(err => console.error('Failed to connect to MongoDB', err));
   }
 });
 
-// Инициализация всех панелей и состояние зон и источников в базе данных
-loader.add({
-  name: 'Database Init...',
-  run: () => {
-    Panel.updateMany({}, { state: 'inactive', socketId: null });
-    Zone.updateMany({}, { active: false });
-    Source.updateMany({}, { active: false });
-  }
-});
+
+// loader.add({
+//   name: 'Database Init...',
+//   run: () => {
+//     Panel.updateMany({}, { state: 'inactive', socketId: null });
+//     Zone.updateMany({}, { active: false });
+//     Source.updateMany({}, { active: false });
+//   }
+// });
 
 //
 loader.add({

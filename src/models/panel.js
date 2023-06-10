@@ -15,11 +15,11 @@ const PanelSchema = new mongoose.Schema({
     type: String,
     default: 'inactive' // inactive, main, zone
   },
-  sources: {
+  activeSource: {
     type: Array,
     default: []
   },
-  zoneId: {
+  activeZone: {
     type: String,
     default: ''
   },

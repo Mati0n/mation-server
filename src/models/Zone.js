@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ZoneSchema = new mongoose.Schema({
-  id: { type: String, required: true },
+  //id: { type: String, required: true },
   name: { type: String, required: true, default: '' },
   devices: { type: Array, default: [] }, // устройства в зоне
   isActive: { type: Boolean, default: false }, // флаг, указывающий, активна ли зона

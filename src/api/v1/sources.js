@@ -50,9 +50,38 @@ router.put('/:id/volume', async (req, res) => {
 });
 
 // Управление предустановленными функциями (действиями)
-router.put('/:id/actions/:actionId', async (req, res) => {
-  // Тут должно быть логика для управления предустановленными функциями источника
+router.put('/:sourceId/actions/:actionId', async (req, res) => {
+  try {
+    // Валидация входных данных
+    const { sourceId, actionId } = req.params;
+    const { actionType } = req.body; // Получение типа нажатия из тела запроса
+    if (!sourceId || !actionId || !actionType) {
+      return res.status(400).json({ message: 'Invalid input parameters' });
+    }
+
+    // Валидация команд поддерживаемых драйвером
+    const source = await SourceModel.findById(sourceId);
+    if (!source) {
+      return res.status(404).json({ message: 'Source not found' });
+    }
+
+    if (!source.actions.includes(actionId)) {
+      return res.status(400).json({ message: 'Action not supported by the source' });
+    }
+
+    // Отправка команд в драйвер управления
+    const result = await source.driver.action(actionId, actionType); // Передача типа нажатия в метод action
+    if (!result.success) {
+      return res.status(500).json({ message: 'Failed to run action' });
+    }
+
+    res.json({ message: 'Action run successfully' });
+  } catch (error) {
+    console.error(`Failed to run action '${req.params.actionId}' for source '${req.params.sourceId}':`, error.message);
+    res.status(500).json({ message: 'An error occurred when running the action.' });
+  }
 });
+
 
 // Получение информации об обратной связи от источника
 router.get('/:id/feedback', async (req, res) => {
