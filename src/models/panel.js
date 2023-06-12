@@ -6,6 +6,10 @@ const PanelSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  inOperation: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -15,11 +19,11 @@ const PanelSchema = new mongoose.Schema({
     type: String,
     default: 'inactive' // inactive, main, zone
   },
-  activeSource: {
+  activeSourceId: {
     type: Array,
     default: []
   },
-  activeZone: {
+  activeZoneId: {
     type: String,
     default: ''
   },

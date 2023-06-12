@@ -77,16 +77,6 @@ loader.add({
   }
 });
 
-
-// loader.add({
-//   name: 'Database Init...',
-//   run: () => {
-//     Panel.updateMany({}, { state: 'inactive', socketId: null });
-//     Zone.updateMany({}, { active: false });
-//     Source.updateMany({}, { active: false });
-//   }
-// });
-
 //
 loader.add({
   name: 'Set up Auth module...',
@@ -103,28 +93,28 @@ loader.add({
 });
 
 //
-loader.add({
-  name: 'Import API modules and routes...',
-  run: () => {
-    // API modules imports
-    const zonesRouter = require('./api/v1/zones');
-    const sourcesRouter = require('./api/v1/sources');
-    const scenesRouter = require('./api/v1/scenes');
-    const configRouter = require('./api/v1/auth');
-    const statusRouter = require('./api/v1/status');
-    const driversRouter = require('./api/v1/drivers');
-    const authRouter = require('./api/v1/auth');
+// loader.add({
+//   name: 'Import API modules and routes...',
+//   run: () => {
+//     // API modules imports
+//     const zonesRouter = require('./api/v1/zones');
+//     const sourcesRouter = require('./api/v1/sources');
+//     const scenesRouter = require('./api/v1/scenes');
+//     const configRouter = require('./api/v1/auth');
+//     const statusRouter = require('./api/v1/status');
+//     const driversRouter = require('./api/v1/drivers');
+//     const authRouter = require('./api/v1/auth');
 
-    // API routes
-    app.use('/auth', authRouter);
-    app.use('/api/v1/sources', sourcesRouter);
-    app.use('/api/v1/scenes', scenesRouter);
-    app.use('/api/v1/config', configRouter);
-    app.use('/api/v1/status', statusRouter);
-    app.use('/api/v1/zones', zonesRouter);
-    app.use('/api/v1/drivers', driversRouter);
-  }
-});
+//     // API routes
+//     app.use('/auth', authRouter);
+//     app.use('/api/v1/sources', sourcesRouter);
+//     app.use('/api/v1/scenes', scenesRouter);
+//     app.use('/api/v1/config', configRouter);
+//     app.use('/api/v1/status', statusRouter);
+//     app.use('/api/v1/zones', zonesRouter);
+//     app.use('/api/v1/drivers', driversRouter);
+//   }
+// });
 
 // Загрузить все драйверы в папке "drivers" при старте сервера
 loader.add({

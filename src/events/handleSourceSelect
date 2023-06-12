@@ -1,25 +1,27 @@
-const { getIo } = require('../core/socketio');
+const { serializeZone, serializeSource } = require('./serialize');
+const { io } = require('./socketio.js');
 const zoneModel = require('../models/zone');
 const panelModel = require('../models/panel');
 const sourceModel = require('../models/source');
 const driverModel = require('../models/driver');
 
-async function handleSourceSelect (params) {
+async function handleSourceSelect (panelId, sourceId) {
   // Валидация входных параметров
-  if (!params.id || !params.panelId || !params.sourceId) {
-    throw new Error('Missing required parameters: id, panelId, and sourceId');
-  }
 
   // Обновление выбранного источника в БД для панели и зоны
-  const zone = await zoneModel.findByIdAndUpdate(params.id, { activeSource: params.sourceId }, { new: true });
-  const panel = await panelModel.findByIdAndUpdate(params.panelId, { activeSource: params.sourceId }, { new: true });
+  const zone = await zoneModel.findByIdAndUpdate(params.id, { activeSource: sourceId }, { new: true });
+  zone.sources.map(source => source.isActive = source.id === sourceId);
+  await zone.save();
+
+  const panel = await panelModel.findByIdAndUpdate(params.panelId, { activeSourceId: sourceId }, { new: true });
 
   // Запуск источника
-  const source = await sourceModel.findById(params.sourceId);
+  const source = await sourceModel.findById(sourceId);
   const driver = await driverModel.findById(source.driverId);
   driver.run(params.panelId);
 
   // Запуск метода источника runAction()
+  //TODO продумать SDK чтоб не проверять наличие методов  Они должны быть, но могут быть не объявлены
   const actions = source.runAction();
   for (const action of actions) {
     const driver = await driverModel.findById(action.driverId);
@@ -27,12 +29,12 @@ async function handleSourceSelect (params) {
   }
 
   // Отправка подробного статуса зоны на все активные панели в этой зоне
-  const io = getIo();
-  const activePanels = await panelModel.find({ activeZone: params.id });
+  const activePanels = await panelModel.find({ activeZoneId: zoneId });
+  const updatedZone = serializeZone(zone);
   activePanels.forEach(panel => {
-    io.to(panel.socketId).emit('updateUI', { activeSource: source });
+    io.to(panel.socketId).emit('updateUI', { updatedZone });
   });
-  io.emit('updateUI', { activeZone: { name: zone.name, isActive: zone.isActive } });
+  io.emit('updateUI', { });
 }
 
 module.exports = handleSourceSelect;
