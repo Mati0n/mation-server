@@ -19,37 +19,37 @@ const loader = new Loader();
 
 async function initializeData () {
   // Создаем драйвер
-  const driver = new DriverModel({
-    name: "Placeholder driver",
-    version: {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      stage: "beta"
-    },
-    isCompatible: true
-  });
-  await driver.save();
+  let driver = await DriverModel.findOne({ name: "Placeholder driver" });
+  if (!driver) {
+    driver = await DriverModel.create({
+      name: "Placeholder driver",
+      version: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        stage: "beta"
+      },
+      isCompatible: true
+    });
+  }
 
   // Создаем зоны
   for (let i = 1; i <= 5; i++) {
     let zone = await ZoneModel.findOne({ name: `Zone ${i}` });
     if (!zone) {
-      zone = new ZoneModel({ name: `Zone ${i}`, isActive: false });
-      await zone.save();
+      zone = await ZoneModel.create({ name: `Zone ${i}`, isActive: false });
     }
 
     // Создаем источники для каждой зоны
-    for (let j = 1; j <= 3; j++) {
-      let source = await SourceModel.findOne({ name: `Source ${j} for Zone ${i}` });
+    for (let j = 1; j <= 5; j++) {
+      let source = await SourceModel.findOne({ name: `Source s${j}z${i}` });
       if (!source) {
-        source = new SourceModel({
-          name: `Source ${j} for Zone ${i}`,
+        source = await SourceModel.create({
+          name: `Source s${j}z${i}`,
           isActive: false,
-          zone: zone._id,
           driver: driver._id
         });
-        await source.save();
+        zone = await ZoneModel.findOneAndUpdate({ name: `Zone ${i}` }, { $addToSet: { sources: source._id } }, { new: true });
       }
     }
   }

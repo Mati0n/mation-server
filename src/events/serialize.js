@@ -4,17 +4,7 @@ function serializeZones (zone) {
   return {
     id: zone._id,
     name: zone.name,
-    //sources: zone.devices,
-    isActive: zone.isActive,
-    volumeBar: zone.volumeBar,
-  };
-}
-
-function serializeZoneSelect (zone) {
-  return {
-    id: zone._id,
-    name: zone.name,
-    sources: zone.devices,
+    sources: zone.sources,
     isActive: zone.isActive,
     volumeBar: zone.volumeBar,
   };
@@ -29,7 +19,7 @@ function serializeSource (source) {
   };
 }
 
-module.exports = { serializeZones, serializeZoneSelect, serializeSource };
+module.exports = { serializeZones, serializeSource };
 
 /**
 const { serializeZone, serializeSource } = require('./serialize');

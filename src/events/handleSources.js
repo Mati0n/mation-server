@@ -1,11 +1,11 @@
 const { serializeZoneSelect, serializeSource } = require('./serialize');
-const { io } = require('./socketio.js');
-const zoneModel = require('../models/zone');
-const panelModel = require('../models/panel');
+const path = require('path');
+const zoneModel = require(path.join(__dirname, '..', 'models/Zone'));
+const panelModel = require(path.join(__dirname, '..', 'models/Panel'));
 
-async function handleSources (panelId) {
+async function handleSources (io, panelId, data) {
   console.log(`Request Zones from panel ${panelId}`);
-  const panel = await panelModel.findById(panelId);
+  const panel = await panelModel.findOne({ panelId });
   const zoneId = panel.activeZoneId;
   const serializedSources = await zoneModel.findById(zoneId).map(zone => serializeZoneSelect(zone)).map(source => serializeSource(source));
 

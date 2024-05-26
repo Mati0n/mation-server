@@ -1,13 +1,13 @@
 const { serializeZone, serializeSource } = require('./serialize');
-const { io } = require('./socketio.js');
-const zoneModel = require('../models/zone');
-const panelModel = require('../models/panel');
-const sourceModel = require('../models/source');
-const driverModel = require('../models/driver');
+const path = require('path');
+const zoneModel = require(path.join(__dirname, '..', 'models/Zone'));
+const panelModel = require(path.join(__dirname, '..', 'models/Panel'));
+const sourceModel = require(path.join(__dirname, '..', 'models/Source'));
+const driverModel = require(path.join(__dirname, '..', 'models/Driver'));
 
-async function handleSourceSelect (panelId, sourceId) {
+async function handleSourceSelect (io, panelId, data) {
   // Валидация входных параметров
-
+  const sourceId = data.sourceId;
   // Обновление выбранного источника в БД для панели и зоны
   const zone = await zoneModel.findByIdAndUpdate(params.id, { activeSource: sourceId }, { new: true });
   zone.sources.map(source => source.isActive = source.id === sourceId);

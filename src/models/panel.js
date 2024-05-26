@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const PanelSchema = new mongoose.Schema({
-  uuid: {
+  panelId: {
     type: String,
     required: true,
     unique: true
@@ -27,7 +27,10 @@ const PanelSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  socketId: String
+  socketId: {
+    type: String,
+    default: ''
+  }
 });
 
 module.exports = mongoose.model('Panel', PanelSchema);
